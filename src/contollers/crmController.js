@@ -30,3 +30,15 @@ export const getContacts = (req, res) => {
         res.json(contacts);
     });
 };
+
+export const getContactById = (req, res) => {
+    Contact.findById(req.params.contactId, (err, contact) => {
+        if(err){
+            console.error(err);
+            res.send(err);
+            return;
+        }
+
+        res.json(contact);
+    });
+}
