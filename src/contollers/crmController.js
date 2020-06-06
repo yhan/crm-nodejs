@@ -44,8 +44,17 @@ export const getContactById = (req, res) => {
     });
 };
 
+export const deleteContact = (req, res) => {
+     Contact.findByIdAndRemove(req.params.contactId,  (err, c) => {
+        if (err)
+            res.status(400).send(err);
+
+        res.status(200).send(res.json({id : c._id}));
+    });
+};
+
 const find = promisify(Contact.findById);
-       
+
 // try to use Promise
 // Does not work
 export const updateContact2 = (req, res) => find(req.params.contactId, res)
@@ -56,7 +65,7 @@ export const updateContact2 = (req, res) => find(req.params.contactId, res)
         }
 
         let body = req.body;
-        body.__v =  contact.__v + 1;
+        body.__v = contact.__v + 1;
 
         Contact.findOneAndUpdate({ _id: req.params.contactId }, req.body, { new: true, useFindAndModify: false }, (err, contact) => {
             if (err) {
@@ -77,7 +86,7 @@ export const updateContact = (req, res) => {
         console.log(`contact version = ${contact.__v}`);
         console.log(`body = ${req.body}`);
         let body = req.body;
-        body.__v =  contact.__v + 1;
+        body.__v = contact.__v + 1;
 
 
         Contact.findOneAndUpdate({ _id: req.params.contactId }, req.body, { new: true, useFindAndModify: false }, (err, contact) => {
