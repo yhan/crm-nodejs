@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { ContactSchema } from '../models/crmModel';
+const { promisify } = require("util");
 
 const Contact = mongoose.model('Contact', ContactSchema);
 
@@ -43,6 +44,30 @@ export const getContactById = (req, res) => {
     });
 };
 
+const find = promisify(Contact.findById);
+       
+// try to use Promise
+// Does not work
+export const updateContact2 = (req, res) => find(req.params.contactId, res)
+    .then((err, contact) => {
+        if (err) {
+            console.error(err);
+            res.send(err);
+        }
+
+        let body = req.body;
+        body.__v =  contact.__v + 1;
+
+        Contact.findOneAndUpdate({ _id: req.params.contactId }, req.body, { new: true, useFindAndModify: false }, (err, contact) => {
+            if (err) {
+                res.send(err);
+            }
+            res.json(contact);
+        });
+    })
+    .catch(err => {
+        console.error(err);
+    });
 
 export const updateContact = (req, res) => {
     Contact.findById(req.params.contactId, (err, contact) => {
