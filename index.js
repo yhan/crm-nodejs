@@ -24,6 +24,8 @@ app.get("/", (req, res) => {
     res.send(`Express running on ${PORT}`);
 });
 
+app.use(express.static("public"));
+
 app.listen(PORT, () => {
     console.log(`Listening on ${PORT}`);
 });
